@@ -1,0 +1,118 @@
+services:
+  # Handle httpS encryption, WAF ModSecurity and forward requests to other services
+  reverse-proxy:
+    build:
+      context: requirements/reverse-proxy
+      dockerfile: Dockerfile
+    ports:
+      - 443:443
+    networks:
+      - transcendence
+    restart: always
+    depends_on:
+      # web:
+      #   condition: service_healthy
+      postgresql:
+        condition: service_healthy
+      pong:
+        condition: service_healthy
+      api:
+        condition: service_healthy
+    env_file:
+      - path: .env
+        required: true
+
+  # Serves static content
+  web:
+    build:
+      context: requirements/web
+      dockerfile: Dockerfile
+    networks:
+      - transcendence
+    restart: always
+    env_file:
+      - path: .env
+        required: true
+    volumes:
+      - static:/usr/share/nginx/html
+    # healthcheck:
+    #   test: "curl -f http://localhost/"
+    #   interval: 2s
+    #   retries: 10
+    #   start_period: 5s
+
+  # Handles the gameplay and the synchronisation of the games between multiple clients.
+  pong:
+    build:
+      context: requirements/pong
+      dockerfile: Dockerfile
+    networks:
+      - transcendence
+    restart: always
+    env_file:
+      - path: .env
+        required: true
+    healthcheck:
+      test: "curl http://localhost/ || exit 1"
+      interval: 2s
+      retries: 10
+      start_period: 5s
+    depends_on:
+      postgresql:
+        condition: service_healthy
+ 
+  # Serves useful data about a player and its stats.
+  api:
+    build:
+      context: requirements/api
+      dockerfile: Dockerfile
+    networks:
+      - transcendence
+    restart: always
+    env_file:
+      - path: .env
+        required: true
+    healthcheck:
+      test: "curl http://localhost/ || exit 1"
+      interval: 2s
+      retries: 10
+      start_period: 5s
+    depends_on:
+      postgresql:
+        condition: service_healthy
+
+  # Hold informations about the playerbase, the tournaments and whatever we need to store.
+  postgresql:
+    build:
+      context: requirements/postgresql
+      dockerfile: Dockerfile
+    networks:
+      - transcendence
+    restart: always
+    healthcheck:
+      test: "pg_isready -h localhost -p 5432 -t 2"
+      interval: 2s
+      retries: 10
+      start_period: 15s
+    env_file:
+      - path: .env
+        required: true
+    volumes:
+      - postgresql:/var/lib/postgresql
+      
+networks:
+  transcendence:
+    name: transcendence
+    driver: bridge
+
+volumes:
+  static:
+    driver_opts:
+      o: bind
+      type: none
+      device: ${HOME}/transcendence/static
+  postgresql:
+    driver_opts:
+      o: bind
+      type: none
+      device: ${HOME}/transcendence/database
