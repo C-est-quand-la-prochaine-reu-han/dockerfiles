@@ -36,7 +36,7 @@ services:
     volumes:
       - static:/usr/share/nginx/html
     # healthcheck:
-    #   test: "curl -f http://localhost/"
+    #   test: "wget http://127.0.0.1/"
     #   interval: 2s
     #   retries: 10
     #   start_period: 5s
@@ -53,10 +53,10 @@ services:
       - path: .env
         required: true
     healthcheck:
-      test: "curl http://localhost/ || exit 1"
-      interval: 2s
-      retries: 10
-      start_period: 5s
+      test: "wget http://127.0.0.1/"
+      interval: 1s
+      retries: 3
+      start_period: 1s
     depends_on:
       postgresql:
         condition: service_healthy
@@ -73,10 +73,10 @@ services:
       - path: .env
         required: true
     healthcheck:
-      test: "curl http://localhost/ || exit 1"
-      interval: 2s
-      retries: 10
-      start_period: 5s
+      test: "wget http://127.0.0.1/"
+      interval: 1s
+      retries: 3
+      start_period: 1s
     depends_on:
       postgresql:
         condition: service_healthy
@@ -90,7 +90,7 @@ services:
       - transcendence
     restart: always
     healthcheck:
-      test: "pg_isready -h localhost -p 5432 -t 2"
+      test: "pg_isready -h 127.0.0.1 -p 5432 -t 2"
       interval: 2s
       retries: 10
       start_period: 15s
@@ -115,4 +115,4 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: ${HOME}/transcendence/database
+      device: ${HOME}/transcendence/postgresql
