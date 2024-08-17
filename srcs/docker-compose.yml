@@ -52,14 +52,19 @@ services:
     env_file:
       - path: .env
         required: true
+    environment:
+      WSGI_FILE: ${PONG_WSGI_FILE}
+      PORT: ${PONG_PORT}
     healthcheck:
-      test: "wget http://127.0.0.1/"
+      test: "wget http://127.0.0.1:$PONG_PORT"
       interval: 1s
       retries: 3
       start_period: 1s
     depends_on:
       postgresql:
         condition: service_healthy
+    volumes:
+      - pong:/var/www/html
  
   # Serves useful data about a player and its stats.
   api:
@@ -72,14 +77,19 @@ services:
     env_file:
       - path: .env
         required: true
+    environment:
+      WSGI_FILE: ${API_WSGI_FILE}
+      PORT: ${API_PORT}
     healthcheck:
-      test: "wget http://127.0.0.1/"
+      test: "wget http://127.0.0.1:$API_PORT"
       interval: 1s
       retries: 3
       start_period: 1s
     depends_on:
       postgresql:
         condition: service_healthy
+    volumes:
+      - api:/var/www/html
 
   # Hold informations about the playerbase, the tournaments and whatever we need to store.
   postgresql:
@@ -110,9 +120,19 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: ${HOME}/transcendence/static
+      device: ${HOME}/ft_transcendence/static
   postgresql:
     driver_opts:
       o: bind
       type: none
-      device: ${HOME}/transcendence/postgresql
+      device: ${HOME}/ft_transcendence/postgresql
+  api:
+    driver_opts:
+      o: bind
+      type: none
+      device: ${API_ROOT_DIRECTORY}
+  pong:
+    driver_opts:
+      o: bind
+      type: none
+      device: ${PONG_ROOT_DIRECTORY}
