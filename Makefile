@@ -77,4 +77,4 @@ help:
 	@echo volume
 	@echo '	This rule creates the directories holding the bind mounts.'
 
-.PHONY: $(NAME)
+.PHONY: $(NAME) init image django-test volume stop clean fclean re help
