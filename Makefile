@@ -19,7 +19,15 @@ $(NAME): volume image
 
 # Custom images are built here
 image:
-	docker build -t django srcs/utils/django/
+	docker build -t django srcs/images/django/
+
+django-test: image
+	docker container rm --force django
+	[ -d ./tests ] || (django-admin startproject demo && mv demo tests)
+	docker run --env PORT=8080 --env WSGI_FILE='demo.wsgi' --volume ./tests/:/var/www/html --publish 80:8080 --detach --name=django django
+	firefox http://localhost:80/
+	sleep 1
+	# docker container rm --force django
 
 # Volumes/bind-mounts preparation
 volume:
@@ -60,6 +68,11 @@ help:
 	@echo
 	@echo image
 	@echo '	This rule build the custom images required by the project.'
+	@echo
+	@echo django-test
+	@echo '	This rule build the django custom image required by the project.'
+	@echo '	It then runs it, exposing the port 8080 and mounting a fake app that should be located in the directory ./tests'
+	@echo '	If the app does not exists, it creates it. If you are not in a venv, or django is not installed, it will fail.'
 	@echo
 	@echo volume
 	@echo '	This rule creates the directories holding the bind mounts.'
