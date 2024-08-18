@@ -1,0 +1,12 @@
+URL rewrite on forwarded request to remove the trailing /prefix/ of the url
+
+Use port specified in env instead of hard-coded 8080 in nginx reverse proxy configuration
+
+Make the dockerfile composable => partly done
+
+Create differents makefile rules to run : 
+ - front-end developement on a dummy back-end => OK
+ - api developement on a dummy database
+ - game developement on a dummy database and a dummy api
+
+
