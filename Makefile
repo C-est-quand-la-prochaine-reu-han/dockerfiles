@@ -17,7 +17,6 @@ all: $(NAME)
 $(NAME): volume image
 	docker compose -p $(NAME) --file srcs/docker-compose.yml up --detach
 
-# Custom images are built here
 image:
 	docker build -t django srcs/images/django/
 
@@ -27,9 +26,8 @@ django-test: image
 	docker run --env PORT=8080 --env WSGI_FILE='demo.wsgi' --volume ./tests/:/var/www/html --publish 80:8080 --detach --name=django django
 	firefox http://localhost:80/
 	sleep 1
-	# docker container rm --force django
+	docker container rm --force django
 
-# Volumes/bind-mounts preparation
 volume:
 	mkdir -p $(addprefix $(HOME)/$(NAME)/,$(VOLUMES))
 
@@ -37,6 +35,8 @@ stop:
 	docker compose -p $(NAME) --file srcs/docker-compose.yml down
 
 clean: stop
+	rm -rf venv/
+	rm -rf tests/
 	docker image rm $(IMAGES_NAME) --force
 
 fclean: clean

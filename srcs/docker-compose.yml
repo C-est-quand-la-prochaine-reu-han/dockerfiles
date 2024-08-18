@@ -5,13 +5,14 @@ services:
       context: requirements/reverse-proxy
       dockerfile: Dockerfile
     ports:
+      - 80:80
       - 443:443
     networks:
       - transcendence
     restart: always
     depends_on:
-      # web:
-      #   condition: service_healthy
+      web:
+        condition: service_healthy
       postgresql:
         condition: service_healthy
       pong:
@@ -35,11 +36,11 @@ services:
         required: true
     volumes:
       - static:/usr/share/nginx/html
-    # healthcheck:
-    #   test: "wget http://127.0.0.1/"
-    #   interval: 2s
-    #   retries: 10
-    #   start_period: 5s
+    healthcheck:
+      test: "curl http://127.0.0.1/"
+      interval: 2s
+      retries: 10
+      start_period: 5s
 
   # Handles the gameplay and the synchronisation of the games between multiple clients.
   pong:
@@ -56,7 +57,7 @@ services:
       WSGI_FILE: ${PONG_WSGI_FILE}
       PORT: ${PONG_PORT}
     healthcheck:
-      test: "wget http://127.0.0.1:$PONG_PORT"
+      test: "wget -O/dev/null -q http://127.0.0.1:$PONG_PORT"
       interval: 1s
       retries: 3
       start_period: 1s
@@ -81,7 +82,7 @@ services:
       WSGI_FILE: ${API_WSGI_FILE}
       PORT: ${API_PORT}
     healthcheck:
-      test: "wget http://127.0.0.1:$API_PORT"
+      test: "wget -O/dev/null -q http://127.0.0.1:${API_PORT}"
       interval: 1s
       retries: 3
       start_period: 1s
@@ -120,7 +121,7 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: ${HOME}/ft_transcendence/static
+      device: ${FRONT_ROOT_DIRECTORY}
   postgresql:
     driver_opts:
       o: bind
