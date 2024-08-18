@@ -6,16 +6,22 @@ NAME=ft_transcendence
 # api : api server
 # postgresql : postgresql container
 
-IMAGES=reverse-proxy web pong api postgresql
+IMAGES=reverse-proxy web pong api postgresql api-mock
 IMAGES_NAME=$(addprefix $(NAME)-, $(IMAGES)) django
+
 CONTAINERS=$(addsuffix -1,$(IMAGES))
-VOLUMES=postgresql static
+
+VOLUMES=postgresql static api pong
 VOLUMES_NAME=$(addprefix $(NAME)_, $(VOLUMES))
 
 all: $(NAME)
 
 $(NAME): volume image
 	docker compose -p $(NAME) --file srcs/docker-compose.yml up --detach
+
+webdev:
+	docker compose -p $(NAME) --file srcs/docker-compose-webdev.yml up --detach
+	firefox localhost &
 
 image:
 	docker build -t django srcs/images/django/
@@ -48,7 +54,7 @@ re: fclean all
 
 help:
 	@echo all
-	@echo '	Run all the services.'
+	@echo '	Run all the 5 services.'
 	@echo
 	@echo stop
 	@echo '	Stop all the services but leave images and volumes intact.'
@@ -74,7 +80,11 @@ help:
 	@echo '	It then runs it, exposing the port 8080 and mounting a fake app that should be located in the directory ./tests'
 	@echo '	If the app does not exists, it creates it. If you are not in a venv, or django is not installed, it will fail.'
 	@echo
+	@echo webdev
+	@echo '	Runs the front-end container, and a mock of the API that will return dummy data.'
+	@echo '	This lightweight version of the project lets you develop, debug or test the interface without caring about the back-end state.'
+	@echo
 	@echo volume
 	@echo '	This rule creates the directories holding the bind mounts.'
 
-.PHONY: $(NAME) init image django-test volume stop clean fclean re help
+.PHONY: $(NAME) webdev image django-test volume stop clean fclean re help

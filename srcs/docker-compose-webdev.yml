@@ -1,0 +1,17 @@
+include:
+  - path: dockerfiles/api-mock.yml
+    project_directory: .
+  - path: dockerfiles/web-dev.yml
+    project_directory: .
+
+networks:
+  transcendence:
+    name: transcendence
+    driver: bridge
+
+volumes:
+  static:
+    driver_opts:
+      o: bind
+      type: none
+      device: ${FRONT_ROOT_DIRECTORY}
