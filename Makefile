@@ -41,8 +41,6 @@ stop:
 	docker compose -p $(NAME) --file srcs/docker-compose.yml down
 
 clean: stop
-	rm -rf venv/
-	rm -rf tests/
 	docker image rm $(IMAGES_NAME) --force
 
 fclean: clean
