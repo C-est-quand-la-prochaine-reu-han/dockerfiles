@@ -1,3 +1,5 @@
+include srcs/.env
+
 NAME=ft_transcendence
 
 # reverse-proxy : reverse proxy holding everything related to security (and entrypoint of the infrastructure)
@@ -28,11 +30,16 @@ image:
 
 django-test: image
 	docker container rm --force django
-	[ -d ./tests ] || (django-admin startproject demo && mv demo tests)
+	[ -d ./venv ] || virtualenv venv || python -m venv venv
+	source venv/bin/activate && pip3 install django
+	[ -d ./tests ] || (source venv/bin/activate && django-admin startproject demo && mv demo tests)
 	docker run --env PORT=8080 --env WSGI_FILE='demo.wsgi' --volume ./tests/:/var/www/html --publish 80:8080 --detach --name=django django
 	firefox http://localhost:80/
-	sleep 1
-	docker container rm --force django
+
+apidev: image
+	docker container rm django
+	@[ -z "$(API_ROOT_DIRECTORY)" ] || echo please export API_ROOT_DIRECTORY or set it in .env
+	docker run --volume "$(API_ROOT_DIRECTORY)":/var/www/html --env PORT=8080 --env WSGI_FILE="$(API_WSGI_FILE)" --publish 80:8080 --name django django
 
 volume:
 	mkdir -p $(addprefix $(HOME)/$(NAME)/,$(VOLUMES))
@@ -41,6 +48,8 @@ stop:
 	docker compose -p $(NAME) --file srcs/docker-compose.yml down
 
 clean: stop
+	rm venv -rf
+	docker container rm --force django
 	docker image rm $(IMAGES_NAME) --force
 
 fclean: clean
