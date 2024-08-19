@@ -18,5 +18,5 @@ services:
       retries: 10
       start_period: 5s
     ports:
-      - 80:80
-      - 443:443
+      - 8080:80
+      - 8443:443

@@ -22,8 +22,20 @@ $(NAME): volume image
 	docker compose -p $(NAME) --file srcs/docker-compose.yml up --detach
 
 webdev:
-	docker compose -p $(NAME) --file srcs/docker-compose-webdev.yml up --detach
-	firefox localhost &
+	docker container rm front --force
+	@[ -z "$(FRONT_ROOT_DIRECTORY)" ] || echo please export FRONT_ROOT_DIRECTORY or set it in .env
+	firefox localhost:8080 &
+	docker run --volume "$(FRONT_ROOT_DIRECTORY)":/usr/share/nginx/html --publish 8080:80 --name front nginx
+
+apidev: image
+	docker container rm api --force
+	@[ -z "$(API_ROOT_DIRECTORY)" ] || echo please export API_ROOT_DIRECTORY or set it in .env
+	docker run --volume "$(API_ROOT_DIRECTORY)":/var/www/html --env PORT=8080 --env WSGI_FILE="$(API_WSGI_FILE)" --publish 8081:8080 --name api django
+
+pongdev: image
+	docker container rm pong --force
+	@[ -z "$(PONG_ROOT_DIRECTORY)" ] || echo please export API_ROOT_DIRECTORY or set it in .env
+	docker run --volume "$(PONG_ROOT_DIRECTORY)":/var/www/html --env PORT=8080 --env WSGI_FILE="$(PONG_WSGI_FILE)" --publish 8082:8080 --name pong django
 
 image:
 	docker build -t django srcs/images/django/
@@ -35,11 +47,6 @@ django-test: image
 	[ -d ./tests ] || (source venv/bin/activate && django-admin startproject demo && mv demo tests)
 	docker run --env PORT=8080 --env WSGI_FILE='demo.wsgi' --volume ./tests/:/var/www/html --publish 80:8080 --detach --name=django django
 	firefox http://localhost:80/
-
-apidev: image
-	docker container rm django
-	@[ -z "$(API_ROOT_DIRECTORY)" ] || echo please export API_ROOT_DIRECTORY or set it in .env
-	docker run --volume "$(API_ROOT_DIRECTORY)":/var/www/html --env PORT=8080 --env WSGI_FILE="$(API_WSGI_FILE)" --publish 80:8080 --name django django
 
 volume:
 	mkdir -p $(addprefix $(HOME)/$(NAME)/,$(VOLUMES))
