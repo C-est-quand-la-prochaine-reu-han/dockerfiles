@@ -98,6 +98,14 @@ help:
 	@echo '	Runs the front-end container, and a mock of the API that will return dummy data.'
 	@echo '	This lightweight version of the project lets you develop, debug or test the interface without caring about the back-end state.'
 	@echo
+	@echo apidev
+	@echo '	Runs the API container.'
+	@echo '	This lightweight version of the project lets you develop, debug or test the API on a local sqlite database.'
+	@echo
+	@echo pongdev
+	@echo '	Runs the game container.'
+	@echo '	This lightweight version of the project lets you develop, debug or test the game on a local sqlite database without API or interface.'
+	@echo
 	@echo volume
 	@echo '	This rule creates the directories holding the bind mounts.'
 
