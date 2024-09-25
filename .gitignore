@@ -1,3 +1,7 @@
 venv/
 srcs/.env
 tests/
+api/
+front/
+pong/
+cli/
