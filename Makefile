@@ -1,5 +1,3 @@
-include srcs/.env
-
 NAME=ft_transcendence
 
 # reverse-proxy : reverse proxy holding everything related to security (and entrypoint of the infrastructure)
@@ -16,7 +14,10 @@ CONTAINERS=$(addsuffix -1,$(IMAGES))
 VOLUMES=postgresql static api pong
 VOLUMES_NAME=$(addprefix $(NAME)_, $(VOLUMES))
 
-all: $(NAME)
+all: env $(NAME)
+
+env:
+	./create_env.sh
 
 $(NAME): volume image
 	docker compose -p $(NAME) --file srcs/docker-compose.yml up --detach
@@ -60,11 +61,12 @@ clean: stop
 	docker image rm $(IMAGES_NAME) --force
 
 fclean: clean
+	rm srcs/.env
 	docker volume rm $(VOLUMES_NAME) --force
 	docker run -v $(HOME)/$(NAME):/$(NAME) alpine rm -rf $(addprefix $(NAME)/,$(VOLUMES)) || exit 0
 	rm -rf $(HOME)/$(NAME)
 
-re: fclean all
+re: env fclean all
 
 help:
 	@echo all
@@ -82,6 +84,11 @@ help:
 	@echo fclean
 	@echo '	Stop all the services, remove the images and wipe the volumes.'
 	@echo '	Full reset, use with caution (especially if you spent a lot of time building a test database).'
+	@echo
+	@echo env
+	@echo ' Creates an env file if it does not exists.'
+	@echo ' It reads each line in the srcs/.env.empty file, and prompt for a value.'
+	@echo ' Empty lines, and lines starting with # are ignored.'
 	@echo
 	@echo re
 	@echo '	fclean + all'
