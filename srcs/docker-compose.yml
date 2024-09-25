@@ -41,13 +41,7 @@ services:
       - path: .env
         required: true
     environment:
-      WSGI_FILE: ${PONG_WSGI_FILE}
       PORT: ${PONG_PORT}
-    healthcheck:
-      test: "wget -O/dev/null -q http://127.0.0.1:$PONG_PORT"
-      interval: 1s
-      retries: 3
-      start_period: 1s
     depends_on:
       postgresql:
         condition: service_healthy
