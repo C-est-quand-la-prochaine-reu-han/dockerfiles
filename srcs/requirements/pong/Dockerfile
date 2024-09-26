@@ -4,7 +4,7 @@ EXPOSE 8765
 
 WORKDIR /usr/src/app
 
-ARG PONG_ROOT_DIRECTORY
+ARG PONG_ROOT_DIRECTORY="./pong"
 COPY ${PONG_ROOT_DIRECTORY} /usr/src/app
 
 RUN pip install --no-cache-dir -r requirements.txt
