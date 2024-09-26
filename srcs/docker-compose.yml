@@ -1,9 +1,3 @@
-include:
-  - path: dockerfiles/api-prod.yml
-    project_directory: .
-  - path: dockerfiles/web-prod.yml
-    project_directory: .
-
 services:
   # Handle httpS encryption, WAF ModSecurity and forward requests to other services
   reverse-proxy:
@@ -29,6 +23,46 @@ services:
       - path: .env
         required: true
 
+  # Serves useful data about a player and its stats.
+  api:
+    build:
+      context: requirements/api
+      dockerfile: Dockerfile
+    networks:
+      - transcendence
+    restart: always
+    env_file:
+      - path: .env
+        required: true
+    environment:
+      WSGI_FILE: ${API_WSGI_FILE}
+      PORT: ${API_PORT}
+    healthcheck:
+      test: "wget -O/dev/null -q http://127.0.0.1:${API_PORT}"
+      interval: 1s
+      retries: 3
+      start_period: 1s
+    depends_on:
+      postgresql:
+        condition: service_healthy
+
+  # Serves the end-user interface
+  web:
+    build:
+      context: requirements/web
+      dockerfile: Dockerfile
+    networks:
+      - transcendence
+    restart: always
+    env_file:
+      - path: .env
+        required: true
+    healthcheck:
+      test: "curl http://127.0.0.1/"
+      interval: 2s
+      retries: 10
+      start_period: 5s
+
   # Handles the gameplay and the synchronisation of the games between multiple clients.
   pong:
     build:
@@ -41,12 +75,11 @@ services:
       - path: .env
         required: true
     environment:
+      PONG_ROOT_DIRECTORY: ${PONG_ROOT_DIRECTORY}
       PORT: ${PONG_PORT}
     depends_on:
       postgresql:
         condition: service_healthy
-    volumes:
-      - pong:/var/www/html
  
   
   # Hold informations about the playerbase, the tournaments and whatever we need to store.
@@ -74,23 +107,8 @@ networks:
     driver: bridge
 
 volumes:
-  static:
-    driver_opts:
-      o: bind
-      type: none
-      device: ${FRONT_ROOT_DIRECTORY}
   postgresql:
     driver_opts:
       o: bind
       type: none
       device: ${HOME}/ft_transcendence/postgresql
-  api:
-    driver_opts:
-      o: bind
-      type: none
-      device: ${API_ROOT_DIRECTORY}
-  pong:
-    driver_opts:
-      o: bind
-      type: none
-      device: ${PONG_ROOT_DIRECTORY}
