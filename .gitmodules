@@ -1,0 +1,12 @@
+[submodule "cli"]
+	path = cli
+	url = git@github.com:C-est-quand-la-prochaine-reu-han/cli
+[submodule "srcs/requirements/api/api"]
+	path = srcs/requirements/api/api
+	url = git@github.com:C-est-quand-la-prochaine-reu-han/appong
+[submodule "srcs/requirements/pong/pong"]
+	path = srcs/requirements/pong/pong
+	url = git@github.com:C-est-quand-la-prochaine-reu-han/pong
+[submodule "srcs/requirements/web/front"]
+	path = srcs/requirements/web/front
+	url = git@github.com:C-est-quand-la-prochaine-reu-han/front-hand
