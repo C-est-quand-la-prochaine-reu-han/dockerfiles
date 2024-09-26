@@ -28,6 +28,8 @@ services:
     build:
       context: requirements/api
       dockerfile: Dockerfile
+      args:
+        HOSTNAME: ${HOSTNAME}
     networks:
       - transcendence
     restart: always
@@ -37,8 +39,9 @@ services:
     environment:
       WSGI_FILE: ${API_WSGI_FILE}
       PORT: ${API_PORT}
+      HOSTNAME: ${HOSTNAME}
     healthcheck:
-      test: "wget -O/dev/null -q http://127.0.0.1:${API_PORT}"
+      test: "wget -O/dev/null -q http://127.0.0.1:${API_PORT}/appong/api/user/"
       interval: 1s
       retries: 3
       start_period: 1s
