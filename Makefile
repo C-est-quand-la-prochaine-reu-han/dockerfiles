@@ -6,7 +6,7 @@ NAME=ft_transcendence
 # api : api server
 # postgresql : postgresql container
 
-IMAGES=reverse-proxy web pong api postgresql api-mock
+IMAGES=reverse-proxy web pong api postgresql
 IMAGES_NAME=$(addprefix $(NAME)-, $(IMAGES)) django
 
 CONTAINERS=$(addsuffix -1,$(IMAGES))
