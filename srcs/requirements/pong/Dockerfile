@@ -9,4 +9,4 @@ COPY ${PONG_ROOT_DIRECTORY} /usr/src/app
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-ENTRYPOINT [ "python", "./pong.py" ]
+ENTRYPOINT ["python", "./pong.py"]

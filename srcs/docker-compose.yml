@@ -82,6 +82,11 @@ services:
     depends_on:
       postgresql:
         condition: service_healthy
+    # Python handles signals right before interpreting each line, only on its main thread.
+    # If a line takes ages to execute, the signal will be greatly delayed.
+    # The running app is waiting for new connections on its main thread, which means no signals are handled if no connections are opened.
+    # As there's no critical data on this app, it can be closed brutally with a SIGINT without risks.
+    stop_signal: SIGINT
     healthcheck:
       test: 'curl -i -N -H "Connection: Upgrade" -H "Upgrade: websocket" http://127.0.0.1:8765'
       interval: 1s
