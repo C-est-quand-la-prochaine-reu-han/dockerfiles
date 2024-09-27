@@ -1,9 +1,15 @@
 services:
   # Handle httpS encryption, WAF ModSecurity and forward requests to other services
   reverse-proxy:
+    env_file:
+      - path: .env
+        required: true
     build:
       context: requirements/reverse-proxy
       dockerfile: Dockerfile
+      args:
+        API_PORT: ${API_PORT}
+        PONG_PORT: ${PONG_PORT}
     ports:
       - 8080:80
       - 8443:443
@@ -19,9 +25,6 @@ services:
         condition: service_healthy
       api:
         condition: service_healthy
-    env_file:
-      - path: .env
-        required: true
 
   # Serves useful data about a player and its stats.
   api:
@@ -41,9 +44,8 @@ services:
     restart: always
     healthcheck:
       test: "wget -O/dev/null -q http://127.0.0.1:${API_PORT}/appong/api/"
-      interval: 1s
-      retries: 3
-      start_period: 1s
+      interval: 0.5s
+      retries: 10
     depends_on:
       postgresql:
         condition: service_healthy
@@ -67,18 +69,17 @@ services:
 
   # Handles the gameplay and the synchronisation of the games between multiple clients.
   pong:
-    build:
-      context: requirements/pong
-      dockerfile: Dockerfile
-    networks:
-      - transcendence
-    restart: always
     env_file:
       - path: .env
         required: true
-    environment:
-      PONG_ROOT_DIRECTORY: ${PONG_ROOT_DIRECTORY}
-      PORT: ${PONG_PORT}
+    build:
+      context: requirements/pong
+      dockerfile: Dockerfile
+      args:
+        PORT: ${PONG_PORT}
+    networks:
+      - transcendence
+    restart: always
     depends_on:
       postgresql:
         condition: service_healthy
@@ -103,9 +104,8 @@ services:
     restart: always
     healthcheck:
       test: "pg_isready -h 127.0.0.1 -p 5432 -t 2"
-      interval: 2s
-      retries: 10
-      start_period: 15s
+      interval: 0.5s
+      retries: 20
     env_file:
       - path: .env
         required: true

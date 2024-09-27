@@ -1,12 +1,15 @@
 FROM python:3
 
-EXPOSE 8765
+ARG PONG_PORT=8765
+ENV PORT=${PONG_PORT}
+
+EXPOSE ${PONG_PORT}
 
 WORKDIR /usr/src/app
 
-ARG PONG_ROOT_DIRECTORY="./pong"
-COPY ${PONG_ROOT_DIRECTORY} /usr/src/app
+COPY ./pong /usr/src/app
 
 RUN pip install --no-cache-dir -r requirements.txt
+RUN env
 
 ENTRYPOINT ["python", "./pong.py"]
