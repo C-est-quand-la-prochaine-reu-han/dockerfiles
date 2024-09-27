@@ -33,6 +33,7 @@ services:
         required: true
     environment:
       WSGI_FILE: ${API_WSGI_FILE}
+      HOSTNAME: ${HOSTNAME}
       PORT: ${API_PORT}
     build:
       context: requirements/api
@@ -89,11 +90,10 @@ services:
     # As there's no critical data on this app, it can be closed brutally with a SIGINT without risks.
     stop_signal: SIGINT
     healthcheck:
-      test: 'curl -i -N -H "Connection: Upgrade" -H "Upgrade: websocket" http://127.0.0.1:8765'
+      test: 'curl -i -N -H "Connection: Upgrade" -H "Upgrade: websocket" http://127.0.0.1:${PONG_PORT}'
       interval: 1s
       retries: 25
  
-  
   # Hold informations about the playerbase, the tournaments and whatever we need to store.
   postgresql:
     build:

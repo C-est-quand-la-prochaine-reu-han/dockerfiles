@@ -1,6 +1,6 @@
 FROM django
 
-ARG HOSTNAME
+ARG HOSTNAME=""
 
 ENV HOSTNAME=${HOSTNAME}
 
@@ -13,4 +13,4 @@ COPY ./scripts/ /scripts
 
 RUN ["pip", "install", "--no-cache-dir", "--break-system-packages", "-r", "requirements.txt"]
 
-ENTRYPOINT ["env", "HOSTNAME=$HOSTNAME", "/scripts/run.sh"]
+ENTRYPOINT ["/scripts/run.sh"]

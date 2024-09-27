@@ -20,7 +20,7 @@ env:
 	./create_env.sh
 
 $(NAME): volume image
-	docker compose -p $(NAME) --file srcs/docker-compose.yml up --detach --build --force-recreate
+	docker compose --project-name $(NAME) --file srcs/docker-compose.yml up --detach
 
 webdev:
 	docker container rm front --force
@@ -66,7 +66,7 @@ fclean: clean
 	docker run -v $(HOME)/$(NAME):/$(NAME) alpine rm -rf $(addprefix $(NAME)/,$(VOLUMES)) || exit 0
 	rm -rf $(HOME)/$(NAME)
 
-re: env fclean all
+re: fclean all
 
 help:
 	@echo all
