@@ -8,10 +8,10 @@ services:
       context: requirements/reverse-proxy
       dockerfile: Dockerfile
       args:
+        HOSTNAME: ${HOSTNAME}
         API_PORT: ${API_PORT}
         PONG_PORT: ${PONG_PORT}
     ports:
-      - 8080:80
       - 8443:443
     networks:
       - transcendence
