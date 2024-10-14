@@ -61,7 +61,7 @@ clean: stop
 	docker image rm $(IMAGES_NAME) --force
 
 fclean: clean
-	rm srcs/.env
+	rm -f srcs/.env
 	docker volume rm $(VOLUMES_NAME) --force
 	docker run -v $(HOME)/$(NAME):/$(NAME) alpine rm -rf $(addprefix $(NAME)/,$(VOLUMES)) || exit 0
 	rm -rf $(HOME)/$(NAME)
