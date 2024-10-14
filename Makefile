@@ -20,7 +20,7 @@ env:
 	./create_env.sh
 
 $(NAME): volume image
-	docker compose --project-name $(NAME) --file srcs/docker-compose.yml up --detach
+	docker compose --parallel -1 --project-name $(NAME) --file srcs/docker-compose.yml up --detach
 
 webdev:
 	docker container rm front --force
@@ -54,6 +54,9 @@ volume:
 
 stop:
 	docker compose -p $(NAME) --file srcs/docker-compose.yml down
+
+db:
+	docker exec -it ft_transcendence-postgresql-1 psql --user postgres
 
 clean: stop
 	rm venv -rf
