@@ -10,3 +10,6 @@
 [submodule "srcs/requirements/web/front"]
 	path = srcs/requirements/web/front
 	url = git@github.com:C-est-quand-la-prochaine-reu-han/front-hand
+[submodule "srcs/requirements/bot/bot"]
+	path = srcs/requirements/bot/bot
+	url = git@github.com:C-est-quand-la-prochaine-reu-han/bot.git
