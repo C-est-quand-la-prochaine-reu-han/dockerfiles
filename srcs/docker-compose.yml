@@ -93,7 +93,24 @@ services:
       test: 'curl -i -N -H "Connection: Upgrade" -H "Upgrade: websocket" http://127.0.0.1:${PONG_PORT}'
       interval: 1s
       retries: 25
- 
+
+  # Add an AI opponent to the game.
+  bot:
+    env_file:
+      - path: .env
+        required: true
+    build:
+      context: requirements/bot
+      dockerfile: Dockerfile
+      args:
+        PORT: ${PONG_PORT}
+    networks:
+      - transcendence
+    restart: always
+    depends_on:
+      pong:
+        condition: service_healthy
+
   # Hold informations about the playerbase, the tournaments and whatever we need to store.
   postgresql:
     build:
