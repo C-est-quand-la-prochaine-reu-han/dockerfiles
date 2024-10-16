@@ -103,13 +103,13 @@ services:
       context: requirements/bot
       dockerfile: Dockerfile
       args:
-        PORT: ${PONG_PORT}
+        PROXY: reverse-proxy
+        PORT: 443
     networks:
       - transcendence
     restart: always
     depends_on:
-      pong:
-        condition: service_healthy
+      - reverse-proxy
 
   # Hold informations about the playerbase, the tournaments and whatever we need to store.
   postgresql:
