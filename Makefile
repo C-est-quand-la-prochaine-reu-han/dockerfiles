@@ -67,6 +67,7 @@ fclean: clean
 	rm -f srcs/.env
 	docker volume rm $(VOLUMES_NAME) --force
 	docker run -v $(HOME)/$(NAME):/$(NAME) alpine rm -rf $(addprefix $(NAME)/,$(VOLUMES)) || exit 0
+	docker system prune --all --force --volumes
 	rm -rf $(HOME)/$(NAME)
 
 re: fclean all
