@@ -32,7 +32,7 @@ services:
       - path: .env
         required: true
     environment:
-      WSGI_FILE: ${API_WSGI_FILE}
+      WSGI_FILE: "mysite.wsgi"
       HOSTNAME: ${HOSTNAME}
       PORT: ${API_PORT}
     build:
