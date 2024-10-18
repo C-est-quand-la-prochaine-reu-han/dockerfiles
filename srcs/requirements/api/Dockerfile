@@ -1,9 +1,9 @@
 FROM django
 
-RUN     apk update && apk upgrade
-RUN     apk add \
-                vim \
-                apk-cron
+RUN	 apk update && apk upgrade
+RUN	 apk add \
+		vim \
+		apk-cron
 
 ARG HOSTNAME=""
 

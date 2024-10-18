@@ -46,7 +46,7 @@ services:
     healthcheck:
       test: "wget -O/dev/null -q http://127.0.0.1:${API_PORT}/appong/api/"
       interval: 0.5s
-      retries: 20
+      retries: 30
     depends_on:
       postgresql:
         condition: service_healthy

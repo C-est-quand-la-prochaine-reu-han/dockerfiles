@@ -6,7 +6,7 @@ NAME=ft_transcendence
 # api : api server
 # postgresql : postgresql container
 
-IMAGES=reverse-proxy web pong api postgresql
+IMAGES=reverse-proxy web pong api postgresql bot
 IMAGES_NAME=$(addprefix $(NAME)-, $(IMAGES)) django
 
 CONTAINERS=$(addsuffix -1,$(IMAGES))
@@ -53,6 +53,7 @@ volume:
 	mkdir -p $(addprefix $(HOME)/$(NAME)/,$(VOLUMES))
 
 stop:
+	touch srcs/.env
 	docker compose -p $(NAME) --file srcs/docker-compose.yml down
 
 db:
@@ -67,7 +68,6 @@ fclean: clean
 	rm -f srcs/.env
 	docker volume rm $(VOLUMES_NAME) --force
 	docker run -v $(HOME)/$(NAME):/$(NAME) alpine rm -rf $(addprefix $(NAME)/,$(VOLUMES)) || exit 0
-	docker system prune --all --force --volumes
 	rm -rf $(HOME)/$(NAME)
 
 re: fclean all
