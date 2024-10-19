@@ -53,6 +53,8 @@ services:
 
   # Serves the end-user interface
   web:
+    environment:
+      API_PORT: ${API_PORT}
     build:
       context: requirements/web
       dockerfile: Dockerfile
@@ -78,6 +80,7 @@ services:
       dockerfile: Dockerfile
       args:
         PORT: ${PONG_PORT}
+        API_PORT: ${API_PORT}
     networks:
       - transcendence
     restart: always
@@ -139,4 +142,4 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: ${HOME}/ft_transcendence/postgresql
+      device: ${HOME}/ft-transcendence/postgresql

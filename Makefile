@@ -1,4 +1,4 @@
-NAME=ft_transcendence
+NAME=ft-transcendence
 
 # reverse-proxy : reverse proxy holding everything related to security (and entrypoint of the infrastructure)
 # web : front-end nginx/apache serving css, js, images and various static resources
@@ -57,7 +57,7 @@ stop:
 	docker compose -p $(NAME) --file srcs/docker-compose.yml down
 
 db:
-	docker exec -it ft_transcendence-postgresql-1 psql --user postgres
+	docker exec -it ft-transcendence-postgresql-1 psql --user postgres
 
 clean: stop
 	rm venv -rf
