@@ -59,6 +59,10 @@ stop:
 db:
 	docker exec -it ft-transcendence-postgresql-1 psql --user postgres
 
+pong:
+	docker image rm -f ft-transcendence-pong
+	docker container rm -f ft-transcendence-pong-1
+
 clean: stop
 	rm venv -rf
 	docker container rm --force django
