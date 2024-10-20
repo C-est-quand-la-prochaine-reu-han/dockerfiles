@@ -6,6 +6,7 @@ RUN	 apk add \
 		apk-cron
 
 ARG HOSTNAME=""
+ARG BOT_TOKEN=""
 
 ENV HOSTNAME=${HOSTNAME}
 
@@ -22,6 +23,8 @@ COPY ./scripts/root /etc/crontabs/root
 RUN chmod 0755 /etc/crontabs/root
 # Create the log file
 RUN touch /var/log/cron.log
+
+RUN ["sh", "-c", "sed -i \"s/REPLACE_WITH_BOT_KEY/$BOT_TOKEN/g\" /var/www/html/appong/fixtures/data_final.json" ]
 
 RUN ["pip", "install", "--no-cache-dir", "--break-system-packages", "-r", "requirements.txt"]
 

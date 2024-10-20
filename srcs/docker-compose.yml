@@ -41,6 +41,7 @@ services:
       dockerfile: Dockerfile
       args:
         HOSTNAME: ${HOSTNAME}
+        BOT_TOKEN: ${BOT_TOKEN}
     networks:
       - transcendence
     restart: always
@@ -54,12 +55,15 @@ services:
 
   # Serves the end-user interface
   web:
-    environment:
-      HOSTNAME: ${HOSTNAME}
-      API_PORT: ${API_PORT}
     build:
       context: requirements/web
       dockerfile: Dockerfile
+      args:
+        BOT_TOKEN: ${BOT_TOKEN}
+        HOSTNAME: ${HOSTNAME}
+    environment:
+      HOSTNAME: ${HOSTNAME}
+      API_PORT: ${API_PORT}
     networks:
       - transcendence
     restart: always
@@ -82,6 +86,7 @@ services:
       dockerfile: Dockerfile
       args:
         PORT: ${PONG_PORT}
+        BOT_TOKEN: ${BOT_TOKEN}
         API_PORT: ${API_PORT}
     networks:
       - transcendence

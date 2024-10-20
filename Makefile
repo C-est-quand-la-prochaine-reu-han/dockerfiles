@@ -20,7 +20,7 @@ env:
 	./create_env.sh
 
 $(NAME): volume image
-	docker compose --parallel -1 --project-name $(NAME) --file srcs/docker-compose.yml up --detach
+	docker compose --parallel -1 --project-name $(NAME) --file srcs/docker-compose.yml up --detach --force-recreate
 
 webdev:
 	docker container rm front --force
