@@ -52,6 +52,8 @@ services:
     depends_on:
       postgresql:
         condition: service_healthy
+    volumes:
+      - media:/var/www/html/media
 
   # Serves the end-user interface
   web:
@@ -151,3 +153,8 @@ volumes:
       o: bind
       type: none
       device: ${HOME}/ft-transcendence/postgresql
+  media:
+    driver_opts:
+      o: bind
+      type: none
+      device: ${HOME}/ft-transcendence/media

@@ -11,7 +11,7 @@ IMAGES_NAME=$(addprefix $(NAME)-, $(IMAGES)) django
 
 CONTAINERS=$(addsuffix -1,$(IMAGES))
 
-VOLUMES=postgresql static api pong
+VOLUMES=media postgresql static api pong
 VOLUMES_NAME=$(addprefix $(NAME)_, $(VOLUMES))
 
 all: env $(NAME)
