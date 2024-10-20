@@ -1,27 +1,8 @@
+1 vs 1 on the same computer
+
 environment variable tokens
-
-pong CLI fix
-
-counters (perfect hit, ball max speed, time stops game after 10m, hit count)
+env vars for hostname in front
 
 remote matches
 
-1 vs 1 on the same computer
-1 vs bot is buggy
-
-matchmaking is fcked
-
-winner are swapped in the front
-
-env vars for hostname in front
-
-prevent playing against bots in 2v2
-
-Use port specified in env instead of hard-coded 8080 in nginx reverse proxy configuration
-
-Make the dockerfile composable => partly done
-
-Create differents makefile rules to run : 
- - front-end developement on a dummy back-end => OK
- - api developement on a dummy database
- - game developement on a dummy database and a dummy api
+pong CLI fix
