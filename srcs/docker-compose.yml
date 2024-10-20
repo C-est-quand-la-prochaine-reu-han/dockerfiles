@@ -28,6 +28,7 @@ services:
 
   # Serves useful data about a player and its stats.
   api:
+    stop_grace_period: 1s
     env_file:
       - path: .env
         required: true
@@ -100,6 +101,7 @@ services:
 
   # Add an AI opponent to the game.
   bot:
+    stop_grace_period: 1s
     env_file:
       - path: .env
         required: true
